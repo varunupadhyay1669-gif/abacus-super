@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Abacus Studio — Interactive soroban abacus learning platform for teachers and students. Practice all 34 formulas with real-time feedback.">
+    <title>Abacus Studio — Interactive Abacus Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
+</head>
+<body class="dark-theme">
+    <!-- Confetti canvas overlay -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="white"/><circle cx="14" cy="12" r="2" fill="white"/><circle cx="10" cy="18" r="2" fill="white"/></svg>
+                </div>
+                <h1>Abacus Studio</h1>
+            </div>
+            <div class="header-controls">
+                <div class="timer-pill" id="timer-pill" title="Session Timer">
+                    <span class="timer-icon">⏱</span>
+                    <span id="timer-display">00:00</span>
+                </div>
+                <div class="score-pill" title="Score">
+                    <span class="score-icon">🏆</span>
+                    <span id="score-display">0 / 0</span>
+                </div>
+                <div class="streak-pill hidden" id="streak-pill" title="Current Streak">
+                    <span class="streak-icon">🔥</span>
+                    <span id="streak-display">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Room Collaboration Bar -->
+        <div class="room-bar" id="room-bar">
+            <!-- Not connected state -->
+            <div class="room-bar-idle" id="room-bar-idle">
+                <div class="room-bar-left">
+                    <span class="room-bar-label">🔗 Live Session</span>
+                </div>
+                <div class="room-bar-actions">
+                    <button id="create-room-btn" class="btn btn-room-create">✦ Create Room</button>
+                    <div class="room-join-group">
+                        <input type="text" id="join-room-input" class="room-code-input" placeholder="Enter code" maxlength="6" />
+                        <button id="join-room-btn" class="btn btn-room-join">Join</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Connected state -->
+            <div class="room-bar-connected hidden" id="room-bar-connected">
+                <div class="room-bar-left">
+                    <span class="connection-dot" id="connection-dot"></span>
+                    <span class="room-role-badge" id="room-role-badge">Teacher</span>
+                    <div class="room-code-display" id="room-code-display" title="Click to copy room code">
+                        <span class="room-code-label">Room:</span>
+                        <span class="room-code-value" id="room-code-value">------</span>
+                        <span class="room-copy-icon">📋</span>
+                    </div>
+                </div>
+                <div class="room-bar-right">
+                    <div class="room-users-pill" id="room-users-pill" title="Connected users">
+                        <span>👥</span>
+                        <span id="room-user-count">1</span>
+                    </div>
+                    <button id="force-sync-btn" class="btn btn-icon btn-sync" title="Force sync all users">⟲ Sync</button>
+                    <button id="leave-room-btn" class="btn btn-icon btn-leave" title="Leave room">✕ Leave</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast container for notifications -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Abacus Area (TOP) -->
+            <section class="abacus-section panel" id="abacus-section">
+                <div class="abacus-header">
+                    <h2>Interactive Abacus</h2>
+                    <div class="abacus-controls">
+                        <label for="rod-count">Rods:</label>
+                        <select id="rod-count">
+                            <option value="3">3 Rods</option>
+                            <option value="5">5 Rods</option>
+                            <option value="7" selected>7 Rods</option>
+                            <option value="9">9 Rods</option>
+                            <option value="11">11 Rods</option>
+                            <option value="13">13 Rods</option>
+                        </select>
+                        <button id="reset-abacus" class="btn btn-secondary" title="Reset all beads to zero">
+                            <span>↺</span> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="abacus-frame-container">
+                    <div id="abacus-frame" class="abacus-frame">
+                        <!-- Rods will be injected here via JS -->
+                    </div>
+                </div>
+                
+                <div class="abacus-value-display">
+                    <span class="value-label">Value:</span>
+                    <span id="current-abacus-value" class="value-number">0</span>
+                </div>
+            </section>
+
+            <!-- Question and Controls Area (BOTTOM) -->
+            <div class="bottom-area">
+                <!-- Teacher Controls -->
+                <section class="teacher-controls panel">
+                    <h3>🎓 Teacher Controls</h3>
+                    <div class="control-group">
+                        <label for="level-select">Level:</label>
+                        <select id="level-select">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="trick-select">Trick / Formula:</label>
+                        <select id="trick-select" disabled>
+                            <option value="">Select Level First</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label for="question-count">Questions per set:</label>
+                        <select id="question-count">
+                            <option value="5">5 Questions</option>
+                            <option value="10" selected>10 Questions</option>
+                            <option value="15">15 Questions</option>
+                            <option value="20">20 Questions</option>
+                        </select>
+                    </div>
+                    <button id="generate-questions" class="btn btn-primary btn-full" disabled>
+                        ▶ Generate Practice
+                    </button>
+                    
+                    <div class="custom-q-section">
+                        <h4>Custom Sequence</h4>
+                        <div class="custom-input-group">
+                            <input type="text" id="custom-sequence" placeholder="e.g. 5, -2, 4, 3" />
+                            <button id="play-custom" class="btn btn-secondary">Play</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Student Practice Area -->
+                <section class="practice-area panel">
+                    <div class="practice-header">
+                        <h3>📝 Practice <span id="q-counter"></span></h3>
+                        <div class="practice-header-actions">
+                            <button id="show-hint" class="btn btn-icon hidden" title="Show Formula Hint">💡 Hint</button>
+                            <button id="skip-question" class="btn btn-icon hidden" title="Skip this question">⏭ Skip</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Welcome / Empty State -->
+                    <div id="welcome-state" class="welcome-state">
+                        <div class="welcome-icon">🧮</div>
+                        <h3>Welcome to Abacus Studio!</h3>
+                        <p>Select a level and trick from the Teacher Controls, then click <strong>Generate Practice</strong> to start.</p>
+                        <p class="welcome-tip">💡 Or type a custom number sequence and press Play!</p>
+                    </div>
+
+                    <!-- Active question state -->
+                    <div id="question-state" class="question-state hidden">
+                        <div class="step-indicator">
+                            <span id="step-label">Step 1 of 4</span>
+                            <div class="step-progress">
+                                <div id="step-progress-bar" class="step-progress-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="question-display" class="question-display">
+                            <!-- Question items injected here -->
+                        </div>
+
+                        <div id="hint-display" class="hint-display hidden"></div>
+                        
+                        <div class="action-buttons">
+                            <button id="check-answer" class="btn btn-success" disabled>✓ Verify Answer</button>
+                            <button id="next-question" class="btn btn-primary hidden">Next Question ➔</button>
+                        </div>
+
+                        <div id="feedback-message" class="feedback-message"></div>
+                    </div>
+
+                    <!-- Session Summary State -->
+                    <div id="summary-state" class="summary-state hidden">
+                        <div class="summary-icon" id="summary-icon">🎉</div>
+                        <h3 id="summary-title">Session Complete!</h3>
+                        <div class="summary-stats">
+                            <div class="stat-card">
+                                <span class="stat-value" id="summary-correct">0</span>
+                                <span class="stat-label">Correct</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="summary-total">0</span>
+                                <span class="stat-label">Total</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="summary-accuracy">0%</span>
+                                <span class="stat-label">Accuracy</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="summary-time">0:00</span>
+                                <span class="stat-label">Time</span>
+                            </div>
+                        </div>
+                        <div class="accuracy-bar-container">
+                            <div id="accuracy-bar" class="accuracy-bar" style="width: 0%"></div>
+                        </div>
+                        <button id="restart-session" class="btn btn-primary btn-full">🔄 New Session</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+        
+        <!-- Formula Reference Drawer -->
+        <button id="toggle-formula-ref" class="floating-btn">📚 Formulas</button>
+        <div id="formula-overlay" class="formula-overlay hidden"></div>
+        <aside id="formula-sidebar" class="formula-sidebar hidden">
+            <div class="sidebar-header">
+                <h2>📖 Formula Reference</h2>
+                <button id="close-formula-ref" class="close-btn">&times;</button>
+            </div>
+            <div class="sidebar-content" id="formula-list">
+                <!-- Injected via JS -->
+            </div>
+        </aside>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
