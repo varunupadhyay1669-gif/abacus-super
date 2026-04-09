@@ -1193,7 +1193,7 @@ function applyRemoteScroll(scrollPercent) {
 // ---- Detect server URL ----
 // DEPLOYMENT: Replace the placeholder below with your actual Render URL
 // after deploying the backend. e.g. 'https://abacus-studio-server.onrender.com'
-const RENDER_BACKEND_URL = 'YOUR_RENDER_URL_HERE';
+const RENDER_BACKEND_URL = 'https://abacus-studio.onrender.com';
 
 function getServerUrl() {
     // Local file:// testing → use local Node server
