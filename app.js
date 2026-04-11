@@ -375,6 +375,9 @@ let state = {
 
     isCustom: false,
 
+    // Bead movement mode: 'individual' | 'standard' | 'together'
+    beadMode: 'individual',
+
     // Collaboration
     socket: null,
     roomCode: null,
@@ -389,6 +392,7 @@ function cacheDom() {
     DOM.frame = document.getElementById('abacus-frame');
     DOM.valueDisplay = document.getElementById('current-abacus-value');
     DOM.rodSelect = document.getElementById('rod-count');
+    DOM.beadMode = document.getElementById('bead-mode');
     DOM.resetBtn = document.getElementById('reset-abacus');
 
     DOM.levelSelect = document.getElementById('level-select');
@@ -529,18 +533,37 @@ function updateBeadPositions(animate) {
             ? (layout.upperH - layout.beadH - 2) + 'px'
             : '2px';
 
-        // Lower beads: count active, stack from top (active) or bottom (inactive)
-        var activeCount = state.beadsState[i].lowers.filter(function(b) { return b; }).length;
+        // Lower beads: build active/inactive groups for proper stacking
+        var activeVis = [];
+        var inactiveVis = [];
+        var beadMode = state.beadMode || 'individual';
 
         lowerBeads.forEach(function(beadEl, visualIdx) {
             if (!animate) beadEl.style.transition = 'none';
+            var logicalIdx = 3 - visualIdx;
+            var isActive;
 
-            var isUp = visualIdx < activeCount;
-            beadEl.dataset.active = isUp;
+            if (beadMode === 'individual' || beadMode === 'together') {
+                // Use actual per-bead state
+                isActive = state.beadsState[i].lowers[logicalIdx];
+            } else {
+                // Standard: top N beads are visually active
+                var activeCount = state.beadsState[i].lowers.filter(function(b) { return b; }).length;
+                isActive = visualIdx < activeCount;
+            }
 
-            beadEl.style.top = isUp
-                ? (visualIdx * layout.slot) + 'px'
-                : (layout.lowerH - (4 - visualIdx) * layout.slot) + 'px';
+            beadEl.dataset.active = isActive;
+            if (isActive) activeVis.push(visualIdx);
+            else inactiveVis.push(visualIdx);
+        });
+
+        // Position active beads from top (against crossbar)
+        activeVis.forEach(function(vi, slot) {
+            lowerBeads[vi].style.top = (slot * layout.slot) + 'px';
+        });
+        // Position inactive beads from bottom (at rest)
+        inactiveVis.forEach(function(vi, slot) {
+            lowerBeads[vi].style.top = (layout.lowerH - (inactiveVis.length - slot) * layout.slot) + 'px';
         });
     });
 
@@ -614,16 +637,28 @@ function toggleUpperBead(rodIndex) {
 }
 
 function handleLowerBeadClick(rodIndex, beadIndex) {
-    const currentState = state.beadsState[rodIndex].lowers[beadIndex];
-    if (!currentState) {
-        // Turn ON this bead and all below
-        for (let i = 0; i <= beadIndex; i++) {
-            state.beadsState[rodIndex].lowers[i] = true;
+    const mode = state.beadMode || 'individual';
+
+    if (mode === 'individual') {
+        // Toggle only this specific bead
+        state.beadsState[rodIndex].lowers[beadIndex] = !state.beadsState[rodIndex].lowers[beadIndex];
+    } else if (mode === 'together') {
+        // Toggle all 4 beads at once
+        const anyActive = state.beadsState[rodIndex].lowers.some(b => b);
+        for (let i = 0; i < 4; i++) {
+            state.beadsState[rodIndex].lowers[i] = !anyActive;
         }
     } else {
-        // Turn OFF this bead and all above
-        for (let i = beadIndex; i < 4; i++) {
-            state.beadsState[rodIndex].lowers[i] = false;
+        // Standard soroban: activate from bottom up, deactivate from top down
+        const currentState = state.beadsState[rodIndex].lowers[beadIndex];
+        if (!currentState) {
+            for (let i = 0; i <= beadIndex; i++) {
+                state.beadsState[rodIndex].lowers[i] = true;
+            }
+        } else {
+            for (let i = beadIndex; i < 4; i++) {
+                state.beadsState[rodIndex].lowers[i] = false;
+            }
         }
     }
     updateBeadPositions();
@@ -661,6 +696,13 @@ function setupEventListeners() {
     });
 
     DOM.resetBtn.addEventListener('click', () => {
+        resetAbacusState(state.rodCount);
+        renderAbacus();
+    });
+
+    DOM.beadMode.addEventListener('change', (e) => {
+        state.beadMode = e.target.value;
+        // Reset beads when switching mode to avoid confusing states
         resetAbacusState(state.rodCount);
         renderAbacus();
     });
