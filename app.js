@@ -464,6 +464,13 @@ function init() {
     setupEventListeners();
     setupCollaboration();
     showScreen('welcome');
+
+    // Re-render on window resize for responsive bead positioning
+    var resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() { renderAbacus(); }, 200);
+    });
 }
 
 function resetAbacusState(rods) {
@@ -478,6 +485,74 @@ function resetAbacusState(rods) {
 
 
 // --- 6. Abacus Rendering & Logic ---
+
+// Layout config for bead positioning across screen sizes and rod counts
+function getBeadLayout() {
+    var w = window.innerWidth;
+    var rods = state.rodCount;
+    var layout;
+    if (w <= 400) {
+        layout = { upperH: 44, lowerH: 148, beadH: 14, gap: 2 };
+    } else if (w <= 700) {
+        layout = { upperH: 44, lowerH: 148, beadH: 18, gap: 2 };
+    } else if (rods === 3) {
+        layout = { upperH: 65, lowerH: 210, beadH: 28, gap: 3 };
+    } else if (rods === 5) {
+        layout = { upperH: 55, lowerH: 185, beadH: 24, gap: 2 };
+    } else {
+        layout = { upperH: 55, lowerH: 185, beadH: 22, gap: 2 };
+    }
+    layout.slot = layout.beadH + layout.gap;
+    return layout;
+}
+
+// Update bead positions on existing DOM elements.
+// animate=true  → smooth CSS transition (for user clicks)
+// animate=false → instant snap (for full DOM rebuilds)
+function updateBeadPositions(animate) {
+    if (animate === undefined) animate = true;
+    var layout = getBeadLayout();
+    var rodEls = DOM.frame.querySelectorAll('.abacus-rod');
+    if (!rodEls.length) return;
+
+    rodEls.forEach(function(rodEl, i) {
+        if (i >= state.beadsState.length) return;
+
+        var upperBead = rodEl.querySelector('.upper-beads .bead');
+        var lowerBeads = rodEl.querySelectorAll('.lower-beads .bead');
+
+        if (!animate) upperBead.style.transition = 'none';
+
+        // Upper bead: inactive → top (away from bar), active → bottom (against bar)
+        upperBead.dataset.active = state.beadsState[i].upper;
+        upperBead.style.top = state.beadsState[i].upper
+            ? (layout.upperH - layout.beadH - 2) + 'px'
+            : '2px';
+
+        // Lower beads: count active, stack from top (active) or bottom (inactive)
+        var activeCount = state.beadsState[i].lowers.filter(function(b) { return b; }).length;
+
+        lowerBeads.forEach(function(beadEl, visualIdx) {
+            if (!animate) beadEl.style.transition = 'none';
+
+            var isUp = visualIdx < activeCount;
+            beadEl.dataset.active = isUp;
+
+            beadEl.style.top = isUp
+                ? (visualIdx * layout.slot) + 'px'
+                : (layout.lowerH - (4 - visualIdx) * layout.slot) + 'px';
+        });
+    });
+
+    // Re-enable transitions after paint so the initial snap has no animation
+    if (!animate) {
+        requestAnimationFrame(function() {
+            var allBeads = DOM.frame.querySelectorAll('.bead');
+            allBeads.forEach(function(b) { b.style.transition = ''; });
+        });
+    }
+}
+
 function renderAbacus() {
     DOM.frame.innerHTML = '';
     DOM.frame.setAttribute('data-rods', state.rodCount);
@@ -500,7 +575,7 @@ function renderAbacus() {
         upperGroup.className = 'bead-group upper-beads';
         const upperBead = document.createElement('div');
         upperBead.className = 'bead';
-        upperBead.dataset.active = state.beadsState[i].upper;
+        upperBead.dataset.active = 'false';
         upperBead.addEventListener('click', () => toggleUpperBead(i));
         upperBead.addEventListener('touchend', (e) => { e.preventDefault(); toggleUpperBead(i); });
         upperGroup.appendChild(upperBead);
@@ -511,7 +586,7 @@ function renderAbacus() {
         for (let b = 3; b >= 0; b--) {
             const lowerBead = document.createElement('div');
             lowerBead.className = 'bead';
-            lowerBead.dataset.active = state.beadsState[i].lowers[b];
+            lowerBead.dataset.active = 'false';
             lowerBead.addEventListener('click', () => handleLowerBeadClick(i, b));
             lowerBead.addEventListener('touchend', (e) => { e.preventDefault(); handleLowerBeadClick(i, b); });
             lowerGroup.appendChild(lowerBead);
@@ -526,11 +601,14 @@ function renderAbacus() {
         rodDiv.appendChild(labelDiv);
         DOM.frame.appendChild(rodDiv);
     }
+
+    // Position beads instantly (no animation on full rebuild)
+    updateBeadPositions(false);
 }
 
 function toggleUpperBead(rodIndex) {
     state.beadsState[rodIndex].upper = !state.beadsState[rodIndex].upper;
-    renderAbacus();
+    updateBeadPositions();
     updateAbacusValue();
     emitBeadUpdate();
 }
@@ -548,7 +626,7 @@ function handleLowerBeadClick(rodIndex, beadIndex) {
             state.beadsState[rodIndex].lowers[i] = false;
         }
     }
-    renderAbacus();
+    updateBeadPositions();
     updateAbacusValue();
     emitBeadUpdate();
 }
