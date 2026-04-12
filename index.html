@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Abacus Studio — Interactive soroban abacus learning platform for teachers and students. Practice all 34 formulas with real-time feedback.">
+    <meta name="description"
+        content="Abacus Studio — Interactive soroban abacus learning platform for teachers and students. Practice all 34 formulas with real-time feedback.">
     <title>Abacus Studio — Interactive Abacus Learning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
 </head>
+
 <body class="dark-theme">
     <!-- Confetti canvas overlay -->
     <canvas id="confetti-canvas"></canvas>
@@ -18,7 +23,14 @@
         <header class="app-header">
             <div class="logo">
                 <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="8" cy="6" r="2" fill="white"/><circle cx="14" cy="12" r="2" fill="white"/><circle cx="10" cy="18" r="2" fill="white"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6" />
+                        <line x1="4" y1="12" x2="20" y2="12" />
+                        <line x1="4" y1="18" x2="20" y2="18" />
+                        <circle cx="8" cy="6" r="2" fill="white" />
+                        <circle cx="14" cy="12" r="2" fill="white" />
+                        <circle cx="10" cy="18" r="2" fill="white" />
+                    </svg>
                 </div>
                 <h1>Abacus Studio</h1>
             </div>
@@ -48,7 +60,8 @@
                 <div class="room-bar-actions">
                     <button id="create-room-btn" class="btn btn-room-create">✦ Create Room</button>
                     <div class="room-join-group">
-                        <input type="text" id="join-room-input" class="room-code-input" placeholder="Enter code" maxlength="6" />
+                        <input type="text" id="join-room-input" class="room-code-input" placeholder="Enter code"
+                            maxlength="6" />
                         <button id="join-room-btn" class="btn btn-room-join">Join</button>
                     </div>
                 </div>
@@ -70,7 +83,8 @@
                         <span>👥</span>
                         <span id="room-user-count">1</span>
                     </div>
-                    <button id="force-sync-btn" class="btn btn-icon btn-sync" title="Force sync all users">⟲ Sync</button>
+                    <button id="force-sync-btn" class="btn btn-icon btn-sync" title="Force sync all users">⟲
+                        Sync</button>
                     <button id="leave-room-btn" class="btn btn-icon btn-leave" title="Leave room">✕ Leave</button>
                 </div>
             </div>
@@ -106,13 +120,13 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="abacus-frame-container">
                     <div id="abacus-frame" class="abacus-frame">
                         <!-- Rods will be injected here via JS -->
                     </div>
                 </div>
-                
+
                 <div class="abacus-value-display">
                     <span class="value-label">Value:</span>
                     <span id="current-abacus-value" class="value-number">0</span>
@@ -148,7 +162,7 @@
                     <button id="generate-questions" class="btn btn-primary btn-full" disabled>
                         ▶ Generate Practice
                     </button>
-                    
+
                     <div class="custom-q-section">
                         <h4>Custom Sequence</h4>
                         <div class="custom-input-group">
@@ -163,16 +177,19 @@
                     <div class="practice-header">
                         <h3>📝 Practice <span id="q-counter"></span></h3>
                         <div class="practice-header-actions">
-                            <button id="show-hint" class="btn btn-icon hidden" title="Show Formula Hint">💡 Hint</button>
-                            <button id="skip-question" class="btn btn-icon hidden" title="Skip this question">⏭ Skip</button>
+                            <button id="show-hint" class="btn btn-icon hidden" title="Show Formula Hint">💡
+                                Hint</button>
+                            <button id="skip-question" class="btn btn-icon hidden" title="Skip this question">⏭
+                                Skip</button>
                         </div>
                     </div>
-                    
+
                     <!-- Welcome / Empty State -->
                     <div id="welcome-state" class="welcome-state">
                         <div class="welcome-icon">🧮</div>
                         <h3>Welcome to Abacus Studio!</h3>
-                        <p>Select a level and trick from the Teacher Controls, then click <strong>Generate Practice</strong> to start.</p>
+                        <p>Select a level and trick from the Teacher Controls, then click <strong>Generate
+                                Practice</strong> to start.</p>
                         <p class="welcome-tip">💡 Or type a custom number sequence and press Play!</p>
                     </div>
 
@@ -190,7 +207,7 @@
                         </div>
 
                         <div id="hint-display" class="hint-display hidden"></div>
-                        
+
                         <div class="action-buttons">
                             <button id="check-answer" class="btn btn-success" disabled>✓ Verify Answer</button>
                             <button id="next-question" class="btn btn-primary hidden">Next Question ➔</button>
@@ -229,7 +246,7 @@
                 </section>
             </div>
         </main>
-        
+
         <!-- Formula Reference Drawer -->
         <button id="toggle-formula-ref" class="floating-btn">📚 Formulas</button>
         <div id="formula-overlay" class="formula-overlay hidden"></div>
@@ -243,7 +260,9 @@
             </div>
         </aside>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
+
 </html>
+``
