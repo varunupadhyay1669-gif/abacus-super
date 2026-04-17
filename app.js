@@ -37,50 +37,50 @@ const ABACUS_LEVELS = [
         id: 4, name: "Level 4: Big Friend (+)",
         description: "Complement of 10 — Addition",
         tricks: [
-            { id: "l4_add1", name: "+1 = +10 − 9", formula: "+1 = +10 − 9", addend: 1 },
-            { id: "l4_add2", name: "+2 = +10 − 8", formula: "+2 = +10 − 8", addend: 2 },
-            { id: "l4_add3", name: "+3 = +10 − 7", formula: "+3 = +10 − 7", addend: 3 },
-            { id: "l4_add4", name: "+4 = +10 − 6", formula: "+4 = +10 − 6", addend: 4 },
-            { id: "l4_add5", name: "+5 = +10 − 5", formula: "+5 = +10 − 5", addend: 5 },
-            { id: "l4_add6", name: "+6 = +10 − 4", formula: "+6 = +10 − 4", addend: 6 },
-            { id: "l4_add7", name: "+7 = +10 − 3", formula: "+7 = +10 − 3", addend: 7 },
-            { id: "l4_add8", name: "+8 = +10 − 2", formula: "+8 = +10 − 2", addend: 8 },
-            { id: "l4_add9", name: "+9 = +10 − 1", formula: "+9 = +10 − 1", addend: 9 }
+            { id: "l4_add1", name: "+1 = +10 − 9", formula: "+1 = +10 − 9", hint: "Add 10 to next rod, subtract 9 on current rod", addend: 1 },
+            { id: "l4_add2", name: "+2 = +10 − 8", formula: "+2 = +10 − 8", hint: "Add 10 to next rod, subtract 8 on current rod", addend: 2 },
+            { id: "l4_add3", name: "+3 = +10 − 7", formula: "+3 = +10 − 7", hint: "Add 10 to next rod, subtract 7 on current rod", addend: 3 },
+            { id: "l4_add4", name: "+4 = +10 − 6", formula: "+4 = +10 − 6", hint: "Add 10 to next rod, subtract 6 on current rod", addend: 4 },
+            { id: "l4_add5", name: "+5 = +10 − 5", formula: "+5 = +10 − 5", hint: "Add 10 to next rod, subtract 5 on current rod", addend: 5 },
+            { id: "l4_add6", name: "+6 = +10 − 4", formula: "+6 = +10 − 4", hint: "Add 10 to next rod, subtract 4 on current rod", addend: 6 },
+            { id: "l4_add7", name: "+7 = +10 − 3", formula: "+7 = +10 − 3", hint: "Add 10 to next rod, subtract 3 on current rod", addend: 7 },
+            { id: "l4_add8", name: "+8 = +10 − 2", formula: "+8 = +10 − 2", hint: "Add 10 to next rod, subtract 2 on current rod", addend: 8 },
+            { id: "l4_add9", name: "+9 = +10 − 1", formula: "+9 = +10 − 1", hint: "Add 10 to next rod, subtract 1 on current rod", addend: 9 }
         ]
     },
     {
         id: 5, name: "Level 5: Big Friend (−)",
         description: "Complement of 10 — Subtraction",
         tricks: [
-            { id: "l5_sub1", name: "−1 = −10 + 9", formula: "−1 = −10 + 9", addend: -1 },
-            { id: "l5_sub2", name: "−2 = −10 + 8", formula: "−2 = −10 + 8", addend: -2 },
-            { id: "l5_sub3", name: "−3 = −10 + 7", formula: "−3 = −10 + 7", addend: -3 },
-            { id: "l5_sub4", name: "−4 = −10 + 6", formula: "−4 = −10 + 6", addend: -4 },
-            { id: "l5_sub5", name: "−5 = −10 + 5", formula: "−5 = −10 + 5", addend: -5 },
-            { id: "l5_sub6", name: "−6 = −10 + 4", formula: "−6 = −10 + 4", addend: -6 },
-            { id: "l5_sub7", name: "−7 = −10 + 3", formula: "−7 = −10 + 3", addend: -7 },
-            { id: "l5_sub8", name: "−8 = −10 + 2", formula: "−8 = −10 + 2", addend: -8 },
-            { id: "l5_sub9", name: "−9 = −10 + 1", formula: "−9 = −10 + 1", addend: -9 }
+            { id: "l5_sub1", name: "−1 = −10 + 9", formula: "−1 = −10 + 9", hint: "Subtract 10 from next rod, add 9 on current rod", addend: -1 },
+            { id: "l5_sub2", name: "−2 = −10 + 8", formula: "−2 = −10 + 8", hint: "Subtract 10 from next rod, add 8 on current rod", addend: -2 },
+            { id: "l5_sub3", name: "−3 = −10 + 7", formula: "−3 = −10 + 7", hint: "Subtract 10 from next rod, add 7 on current rod", addend: -3 },
+            { id: "l5_sub4", name: "−4 = −10 + 6", formula: "−4 = −10 + 6", hint: "Subtract 10 from next rod, add 6 on current rod", addend: -4 },
+            { id: "l5_sub5", name: "−5 = −10 + 5", formula: "−5 = −10 + 5", hint: "Subtract 10 from next rod, add 5 on current rod", addend: -5 },
+            { id: "l5_sub6", name: "−6 = −10 + 4", formula: "−6 = −10 + 4", hint: "Subtract 10 from next rod, add 4 on current rod", addend: -6 },
+            { id: "l5_sub7", name: "−7 = −10 + 3", formula: "−7 = −10 + 3", hint: "Subtract 10 from next rod, add 3 on current rod", addend: -7 },
+            { id: "l5_sub8", name: "−8 = −10 + 2", formula: "−8 = −10 + 2", hint: "Subtract 10 from next rod, add 2 on current rod", addend: -8 },
+            { id: "l5_sub9", name: "−9 = −10 + 1", formula: "−9 = −10 + 1", hint: "Subtract 10 from next rod, add 1 on current rod", addend: -9 }
         ]
     },
     {
         id: 6, name: "Level 6: Mix Friend (+)",
         description: "Combination formulas — Addition",
         tricks: [
-            { id: "l6_add6", name: "+6 = +10 − 5 + 1", formula: "+6 = +10 − 5 + 1", addend: 6 },
-            { id: "l6_add7", name: "+7 = +10 − 5 + 2", formula: "+7 = +10 − 5 + 2", addend: 7 },
-            { id: "l6_add8", name: "+8 = +10 − 5 + 3", formula: "+8 = +10 − 5 + 3", addend: 8 },
-            { id: "l6_add9", name: "+9 = +10 − 5 + 4", formula: "+9 = +10 − 5 + 4", addend: 9 }
+            { id: "l6_add6", name: "+6 = +10 − 5 + 1", formula: "+6 = +10 − 5 + 1", hint: "Add 10 to next rod, push up 5-bead, pull up 1 earth bead", addend: 6 },
+            { id: "l6_add7", name: "+7 = +10 − 5 + 2", formula: "+7 = +10 − 5 + 2", hint: "Add 10 to next rod, push up 5-bead, pull up 2 earth beads", addend: 7 },
+            { id: "l6_add8", name: "+8 = +10 − 5 + 3", formula: "+8 = +10 − 5 + 3", hint: "Add 10 to next rod, push up 5-bead, pull up 3 earth beads", addend: 8 },
+            { id: "l6_add9", name: "+9 = +10 − 5 + 4", formula: "+9 = +10 − 5 + 4", hint: "Add 10 to next rod, push up 5-bead, pull up 4 earth beads", addend: 9 }
         ]
     },
     {
         id: 7, name: "Level 7: Mix Friend (−)",
         description: "Combination formulas — Subtraction",
         tricks: [
-            { id: "l7_sub6", name: "−6 = −10 + 5 − 1", formula: "−6 = −10 + 5 − 1", addend: -6 },
-            { id: "l7_sub7", name: "−7 = −10 + 5 − 2", formula: "−7 = −10 + 5 − 2", addend: -7 },
-            { id: "l7_sub8", name: "−8 = −10 + 5 − 3", formula: "−8 = −10 + 5 − 3", addend: -8 },
-            { id: "l7_sub9", name: "−9 = −10 + 5 − 4", formula: "−9 = −10 + 5 − 4", addend: -9 }
+            { id: "l7_sub6", name: "−6 = −10 + 5 − 1", formula: "−6 = −10 + 5 − 1", hint: "Subtract 10 from next rod, pull down 5-bead, push away 1 earth bead", addend: -6 },
+            { id: "l7_sub7", name: "−7 = −10 + 5 − 2", formula: "−7 = −10 + 5 − 2", hint: "Subtract 10 from next rod, pull down 5-bead, push away 2 earth beads", addend: -7 },
+            { id: "l7_sub8", name: "−8 = −10 + 5 − 3", formula: "−8 = −10 + 5 − 3", hint: "Subtract 10 from next rod, pull down 5-bead, push away 3 earth beads", addend: -8 },
+            { id: "l7_sub9", name: "−9 = −10 + 5 − 4", formula: "−9 = −10 + 5 − 4", hint: "Subtract 10 from next rod, pull down 5-bead, push away 4 earth beads", addend: -9 }
         ]
     },
     {
@@ -88,6 +88,43 @@ const ABACUS_LEVELS = [
         description: "Multi-digit practice using all formulas",
         tricks: [
             { id: "l8_all", name: "Mixed 2-Digit Practice", formula: "All formulas combined", hint: "Use all your formula knowledge!" }
+        ]
+    },
+    {
+        id: 9, name: "Level 9: 2-Digit Small Friend",
+        description: "2-digit numbers forcing complement-of-5 formulas",
+        tricks: [
+            { id: "l9_sf", name: "2-Digit Small Friend Mix", hint: "Apply Small Friend on the ones and tens columns" }
+        ]
+    },
+    {
+        id: 10, name: "Level 10: 2-Digit Big Friend",
+        description: "2-digit numbers forcing complement-of-10 formulas",
+        tricks: [
+            { id: "l10_bf", name: "2-Digit Big Friend Mix", hint: "Apply Big Friend carry/borrow across columns" }
+        ]
+    },
+    {
+        id: 11, name: "Level 11: 2-Digit Combination",
+        description: "2-digit numbers forcing Mix Friend formulas",
+        tricks: [
+            { id: "l11_mf", name: "2-Digit Mix Friend Combo", hint: "Combine Small + Big Friend techniques on multi-digit numbers" }
+        ]
+    },
+    {
+        id: 12, name: "Level 12: 3-Digit All Mixed",
+        description: "3-digit comprehensive practice — all formulas",
+        tricks: [
+            { id: "l12_3d", name: "3-Digit All Formulas", hint: "Master all formulas on hundreds, tens, and ones!" }
+        ]
+    },
+    {
+        id: 13, name: "Level 13: Speed Drill",
+        description: "Quick single-digit sums — build speed and accuracy",
+        tricks: [
+            { id: "l13_speed5", name: "Speed Drill: 5 Numbers", hint: "Fast! Add/subtract quickly" },
+            { id: "l13_speed8", name: "Speed Drill: 8 Numbers", hint: "Longer chains — stay focused!" },
+            { id: "l13_speed12", name: "Speed Drill: 12 Numbers", hint: "Marathon drill — concentration is key!" }
         ]
     }
 ];
@@ -321,10 +358,213 @@ function generateMixed2Digit(count) {
     return questions;
 }
 
+// --- 2-Digit Small Friend Generator (Level 9) ---
+function generate2DigitSmallFriend(count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const seq = [];
+        const len = 3 + Math.floor(Math.random() * 2);
+        let running = 0;
+        for (let j = 0; j < len; j++) {
+            if (j === 0) {
+                // Start with a 2-digit number whose ones digit is 2-4 (forces small friend on next add)
+                const tens = 1 + Math.floor(Math.random() * 4); // 10-40
+                const ones = 2 + Math.floor(Math.random() * 3); // 2-4
+                const v = tens * 10 + ones;
+                seq.push(v);
+                running = v;
+            } else if (j === 1) {
+                // Force a small friend addition: add something where ones overflows past 4
+                const curOnes = running % 10;
+                const addend = Math.max(1, 5 - curOnes + Math.floor(Math.random() * 2));
+                const v = Math.min(addend, 9 - curOnes + 5); // keep single digit add
+                const safeV = Math.min(v, 4);
+                seq.push(safeV > 0 ? safeV : 2);
+                running += (safeV > 0 ? safeV : 2);
+            } else {
+                // Random safe operations
+                const maxAdd = Math.min(20, 99 - running);
+                const maxSub = Math.min(20, running - 1);
+                if (maxAdd > 0 && (maxSub < 3 || Math.random() > 0.4)) {
+                    const v = 1 + Math.floor(Math.random() * Math.min(15, maxAdd));
+                    seq.push(v);
+                    running += v;
+                } else if (maxSub > 0) {
+                    const v = -(1 + Math.floor(Math.random() * Math.min(15, maxSub)));
+                    seq.push(v);
+                    running += v;
+                }
+            }
+            if (running < 0) running = 0;
+            if (running > 99) running = 99;
+        }
+        if (seq.length >= 2) questions.push(seq);
+    }
+    return questions;
+}
+
+// --- 2-Digit Big Friend Generator (Level 10) ---
+function generate2DigitBigFriend(count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const seq = [];
+        const len = 3 + Math.floor(Math.random() * 2);
+        let running = 0;
+        for (let j = 0; j < len; j++) {
+            if (j === 0) {
+                // Start with ones 5-9 so next add forces carry (big friend)
+                const tens = 1 + Math.floor(Math.random() * 4);
+                const ones = 5 + Math.floor(Math.random() * 5);
+                const v = tens * 10 + ones;
+                seq.push(v);
+                running = v;
+            } else if (j === 1) {
+                // Force big friend: add so ones cross 10
+                const curOnes = running % 10;
+                const addend = (10 - curOnes) + Math.floor(Math.random() * 3) + 1;
+                const safeV = Math.min(addend, 99 - running);
+                seq.push(safeV > 0 ? safeV : 5);
+                running += (safeV > 0 ? safeV : 5);
+            } else {
+                const maxAdd = Math.min(25, 99 - running);
+                const maxSub = Math.min(25, running - 1);
+                if (maxAdd > 0 && (maxSub < 3 || Math.random() > 0.45)) {
+                    const v = 1 + Math.floor(Math.random() * Math.min(20, maxAdd));
+                    seq.push(v);
+                    running += v;
+                } else if (maxSub > 0) {
+                    const v = -(1 + Math.floor(Math.random() * Math.min(20, maxSub)));
+                    seq.push(v);
+                    running += v;
+                }
+            }
+            if (running < 0) running = 0;
+            if (running > 99) running = 99;
+        }
+        if (seq.length >= 2) questions.push(seq);
+    }
+    return questions;
+}
+
+// --- 2-Digit Mix Friend Generator (Level 11) ---
+function generate2DigitMixFriend(count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const seq = [];
+        const len = 3 + Math.floor(Math.random() * 2);
+        let running = 0;
+        for (let j = 0; j < len; j++) {
+            if (j === 0) {
+                // Start with ones 5-9 (5-bead active) to force mix friend
+                const tens = 1 + Math.floor(Math.random() * 5);
+                const ones = 5 + Math.floor(Math.random() * 4); // 5-8
+                const v = tens * 10 + ones;
+                seq.push(v);
+                running = v;
+            } else if (j === 1) {
+                // Force mix friend: add 6-9 where ones >= 5
+                const addend = 6 + Math.floor(Math.random() * 4); // 6-9
+                const safeV = Math.min(addend, 99 - running);
+                seq.push(safeV > 0 ? safeV : 6);
+                running += (safeV > 0 ? safeV : 6);
+            } else {
+                const maxAdd = Math.min(20, 99 - running);
+                const maxSub = Math.min(20, running - 1);
+                if (maxAdd > 0 && (maxSub < 3 || Math.random() > 0.45)) {
+                    const v = 1 + Math.floor(Math.random() * Math.min(15, maxAdd));
+                    seq.push(v);
+                    running += v;
+                } else if (maxSub > 0) {
+                    const v = -(1 + Math.floor(Math.random() * Math.min(15, maxSub)));
+                    seq.push(v);
+                    running += v;
+                }
+            }
+            if (running < 0) running = 0;
+            if (running > 99) running = 99;
+        }
+        if (seq.length >= 2) questions.push(seq);
+    }
+    return questions;
+}
+
+// --- 3-Digit All Mixed Generator (Level 12) ---
+function generate3DigitMixed(count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const seq = [];
+        const len = 3 + Math.floor(Math.random() * 3);
+        let running = 0;
+        for (let j = 0; j < len; j++) {
+            if (j === 0) {
+                const v = 100 + Math.floor(Math.random() * 400);
+                seq.push(v);
+                running = v;
+            } else {
+                const maxAdd = Math.min(300, 999 - running);
+                const maxSub = Math.min(300, running - 1);
+                const isAdd = maxAdd > 10 && (maxSub < 10 || Math.random() > 0.45);
+                if (isAdd) {
+                    const v = 1 + Math.floor(Math.random() * Math.min(200, maxAdd));
+                    seq.push(v);
+                    running += v;
+                } else if (maxSub > 0) {
+                    const v = -(1 + Math.floor(Math.random() * Math.min(200, maxSub)));
+                    seq.push(v);
+                    running += v;
+                }
+            }
+            if (running < 0) running = 0;
+            if (running > 999) running = 999;
+        }
+        if (seq.length >= 2) questions.push(seq);
+    }
+    return questions;
+}
+
+// --- Speed Drill Generator (Level 13) ---
+function generateSpeedDrill(chainLength, count) {
+    const questions = [];
+    for (let i = 0; i < count; i++) {
+        const seq = [];
+        let running = 0;
+        for (let j = 0; j < chainLength; j++) {
+            if (j === 0) {
+                const v = 1 + Math.floor(Math.random() * 9);
+                seq.push(v);
+                running = v;
+            } else {
+                const canAdd = Math.min(9, 18 - running);
+                const canSub = Math.min(9, running - 1);
+                const isAdd = canAdd > 0 && (canSub <= 0 || Math.random() > 0.45);
+                if (isAdd && canAdd > 0) {
+                    const v = 1 + Math.floor(Math.random() * canAdd);
+                    seq.push(v);
+                    running += v;
+                } else if (canSub > 0) {
+                    const v = -(1 + Math.floor(Math.random() * canSub));
+                    seq.push(v);
+                    running += v;
+                }
+            }
+            if (running < 0) running = 1;
+        }
+        if (seq.length >= 2) questions.push(seq);
+    }
+    return questions;
+}
+
 function generateQuestionsForTrick(trickId, count) {
     // Route to correct generator
     if (trickId === "l1_direct") return generateDirectQuestions(count);
     if (trickId === "l8_all") return generateMixed2Digit(count);
+    if (trickId === "l9_sf") return generate2DigitSmallFriend(count);
+    if (trickId === "l10_bf") return generate2DigitBigFriend(count);
+    if (trickId === "l11_mf") return generate2DigitMixFriend(count);
+    if (trickId === "l12_3d") return generate3DigitMixed(count);
+    if (trickId === "l13_speed5") return generateSpeedDrill(5, count);
+    if (trickId === "l13_speed8") return generateSpeedDrill(8, count);
+    if (trickId === "l13_speed12") return generateSpeedDrill(12, count);
 
     // Find the trick data
     const trick = ABACUS_LEVELS.flatMap(l => l.tricks).find(t => t.id === trickId);
@@ -440,6 +680,7 @@ function cacheDom() {
     DOM.formulaList = document.getElementById('formula-list');
 
     DOM.confettiCanvas = document.getElementById('confetti-canvas');
+    DOM.appContainer = document.getElementById('app-container');
 
     // Room collaboration DOM
     DOM.roomBarIdle = document.getElementById('room-bar-idle');
@@ -453,6 +694,7 @@ function cacheDom() {
     DOM.connectionDot = document.getElementById('connection-dot');
     DOM.roomUserCount = document.getElementById('room-user-count');
     DOM.forceSyncBtn = document.getElementById('force-sync-btn');
+    DOM.shareLinkBtn = document.getElementById('share-link-btn');
     DOM.leaveRoomBtn = document.getElementById('leave-room-btn');
     DOM.toastContainer = document.getElementById('toast-container');
 }
@@ -475,6 +717,64 @@ function init() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function() { renderAbacus(); }, 200);
     });
+
+    // Check URL for direct room join: ?room=CODE
+    checkUrlAutoJoin();
+}
+
+// --- Auto-join from URL parameter ---
+function checkUrlAutoJoin() {
+    const params = new URLSearchParams(window.location.search);
+    const roomCode = (params.get('room') || '').toUpperCase().trim();
+    if (!roomCode || roomCode.length < 4) return;
+
+    // Wait for socket to connect, then auto-join
+    const waitForSocket = setInterval(() => {
+        if (state.socket && state.socket.connected) {
+            clearInterval(waitForSocket);
+            state.socket.emit('join-room', { code: roomCode, name: 'Student' }, (res) => {
+                if (res.success) {
+                    state.roomCode = res.roomCode;
+                    state.role = 'student';
+                    state.isInRoom = true;
+                    showConnectedUI(res.roomCode, 'Student');
+                    setStudentMode(true);
+                    showToast(`\u2705 Joined room! Teacher: ${res.teacherName}`, 'success');
+
+                    // Apply current state from teacher
+                    if (res.currentState) {
+                        if (res.currentState.beadsState) {
+                            applyRemoteBeadState(res.currentState);
+                        }
+                        if (res.currentState.sessionState) {
+                            applyRemoteSession(res.currentState.sessionState);
+                        }
+                        if (res.currentState.scrollPercent !== undefined) {
+                            setTimeout(() => applyRemoteScroll(res.currentState.scrollPercent), 500);
+                        }
+                    }
+
+                    // Clean URL without reload
+                    const cleanUrl = window.location.origin + window.location.pathname;
+                    window.history.replaceState({}, document.title, cleanUrl);
+                } else {
+                    showToast(`\u274c ${res.error}`, 'error');
+                }
+            });
+        }
+    }, 200);
+
+    // Give up after 10 seconds
+    setTimeout(() => clearInterval(waitForSocket), 10000);
+}
+
+// --- Student Mode: hide teacher controls, show simplified UI ---
+function setStudentMode(enabled) {
+    if (enabled) {
+        DOM.appContainer.classList.add('student-mode');
+    } else {
+        DOM.appContainer.classList.remove('student-mode');
+    }
 }
 
 function resetAbacusState(rods) {
@@ -1457,6 +1757,7 @@ function setupCollaboration() {
                 state.role = 'student';
                 state.isInRoom = true;
                 showConnectedUI(res.roomCode, 'Student');
+                setStudentMode(true);
                 showToast(`\u2705 Joined room! Teacher: ${res.teacherName}`, 'success');
 
                 // Apply current state from teacher
@@ -1474,6 +1775,19 @@ function setupCollaboration() {
             } else {
                 showToast(`\u274c ${res.error}`, 'error');
             }
+        });
+    });
+
+    // ---- Share Direct Link (teacher only) ----
+    DOM.shareLinkBtn.addEventListener('click', () => {
+        if (!state.roomCode) return;
+        const baseUrl = window.location.origin + window.location.pathname;
+        const directLink = `${baseUrl}?room=${state.roomCode}`;
+        navigator.clipboard.writeText(directLink).then(() => {
+            showToast('\ud83d\udd17 Direct student link copied! Send it to your student — no passcode needed.', 'success');
+        }).catch(() => {
+            // Fallback: show link in toast
+            showToast(`\ud83d\udd17 Share this link: <strong>${directLink}</strong>`, 'info');
         });
     });
 
@@ -1558,6 +1872,11 @@ function showConnectedUI(roomCode, role) {
     DOM.roomRoleBadge.className = `room-role-badge role-${role.toLowerCase()}`;
     DOM.connectionDot.className = 'connection-dot connected';
     DOM.roomUserCount.textContent = '1';
+
+    // Teacher-only buttons
+    const isTeacher = role.toLowerCase() === 'teacher';
+    DOM.shareLinkBtn.style.display = isTeacher ? '' : 'none';
+    DOM.forceSyncBtn.style.display = isTeacher ? '' : 'none';
 }
 
 function resetRoomUI() {
@@ -1567,6 +1886,7 @@ function resetRoomUI() {
     DOM.roomBarIdle.classList.remove('hidden');
     DOM.roomBarConnected.classList.add('hidden');
     DOM.joinRoomInput.value = '';
+    setStudentMode(false);
 }
 
 // ---- Patch startSession to emit session sync ----

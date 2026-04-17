@@ -310,6 +310,28 @@ io.on('connection', (socket) => {
     }
 });
 
+// ---- Room info endpoint (for direct-link auto-join) ----
+app.get('/api/room-info/:code', (req, res) => {
+    const code = (req.params.code || '').toUpperCase().trim();
+    const room = rooms.get(code);
+    if (!room) {
+        return res.status(404).json({ exists: false, error: 'Room not found' });
+    }
+    res.json({
+        exists: true,
+        code: room.code,
+        teacherName: room.teacherName,
+        studentCount: room.students.size,
+        hasTeacher: !!room.teacherId
+    });
+});
+
+// ---- Short join URL: /join/CODE redirects to /?room=CODE ----
+app.get('/join/:code', (req, res) => {
+    const code = (req.params.code || '').toUpperCase().trim();
+    res.redirect(`/?room=${code}`);
+});
+
 // ---- Health check endpoint ----
 app.get('/api/health', (req, res) => {
     res.json({

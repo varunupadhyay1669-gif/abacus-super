@@ -1096,6 +1096,66 @@ select option { background: var(--bg-panel-solid); }
 
 
 /* ============================================================
+   SHARE LINK BUTTON
+   ============================================================ */
+.btn-share-link {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    font-weight: 700;
+    padding: 0.45rem 1rem;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3);
+    transition: all var(--transition);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+}
+.btn-share-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.45);
+}
+.btn-share-link:active {
+    transform: scale(0.97);
+}
+
+/* ============================================================
+   STUDENT MODE — Hide teacher-only controls
+   ============================================================ */
+.student-mode .teacher-controls {
+    display: none !important;
+}
+
+.student-mode .bottom-area {
+    grid-template-columns: 1fr !important;
+}
+
+.student-mode .abacus-controls label[for="rod-count"],
+.student-mode .abacus-controls #rod-count,
+.student-mode .abacus-controls label[for="bead-mode"],
+.student-mode .abacus-controls #bead-mode {
+    display: none !important;
+}
+
+.student-mode .room-bar-idle {
+    display: none !important;
+}
+
+/* Student sees a cleaner, focused practice area */
+.student-mode .practice-area {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.student-mode .welcome-state h3 {
+    font-size: 1.3rem;
+}
+
+.student-mode .welcome-state p {
+    font-size: 1rem;
+}
+
+/* ============================================================
    ANIMATIONS
    ============================================================ */
 @keyframes bounceIn {
