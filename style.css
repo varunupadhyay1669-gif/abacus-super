@@ -415,11 +415,21 @@ select option { background: var(--bg-panel-solid); }
     border-radius: 10px;
 }
 
+.bead {
+    touch-action: none;   /* prevent scroll while dragging beads */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .bead:hover {
     filter: brightness(1.15);
     box-shadow: 0 2px 8px rgba(234, 179, 8, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
-.bead:active { filter: brightness(1.25); }
+.bead:active, .bead.bead-dragging {
+    filter: brightness(1.3);
+    box-shadow: 0 0 12px rgba(234, 179, 8, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    z-index: 20;
+}
 
 /* Active bead states — positioning handled by JS */
 .bead[data-active="true"] {
@@ -1130,10 +1140,7 @@ select option { background: var(--bg-panel-solid); }
     grid-template-columns: 1fr !important;
 }
 
-.student-mode .abacus-controls label[for="rod-count"],
-.student-mode .abacus-controls #rod-count,
-.student-mode .abacus-controls label[for="bead-mode"],
-.student-mode .abacus-controls #bead-mode {
+.student-mode .abacus-controls {
     display: none !important;
 }
 

@@ -615,9 +615,6 @@ let state = {
 
     isCustom: false,
 
-    // Bead movement mode: 'individual' | 'standard' | 'together'
-    beadMode: 'individual',
-
     // Collaboration
     socket: null,
     roomCode: null,
@@ -632,7 +629,6 @@ function cacheDom() {
     DOM.frame = document.getElementById('abacus-frame');
     DOM.valueDisplay = document.getElementById('current-abacus-value');
     DOM.rodSelect = document.getElementById('rod-count');
-    DOM.beadMode = document.getElementById('bead-mode');
     DOM.resetBtn = document.getElementById('reset-abacus');
 
     DOM.levelSelect = document.getElementById('level-select');
@@ -707,6 +703,7 @@ function init() {
     populateLevels();
     resetAbacusState(state.rodCount);
     renderAbacus();
+    initGlobalDragListeners();
     setupEventListeners();
     setupCollaboration();
     showScreen('welcome');
@@ -833,24 +830,15 @@ function updateBeadPositions(animate) {
             ? (layout.upperH - layout.beadH - 2) + 'px'
             : '2px';
 
-        // Lower beads: build active/inactive groups for proper stacking
+        // Lower beads: active beads stack at top (against crossbar),
+        // inactive beads rest at bottom — standard soroban layout
         var activeVis = [];
         var inactiveVis = [];
-        var beadMode = state.beadMode || 'individual';
 
         lowerBeads.forEach(function(beadEl, visualIdx) {
             if (!animate) beadEl.style.transition = 'none';
             var logicalIdx = 3 - visualIdx;
-            var isActive;
-
-            if (beadMode === 'individual' || beadMode === 'together') {
-                // Use actual per-bead state
-                isActive = state.beadsState[i].lowers[logicalIdx];
-            } else {
-                // Standard: top N beads are visually active
-                var activeCount = state.beadsState[i].lowers.filter(function(b) { return b; }).length;
-                isActive = visualIdx < activeCount;
-            }
+            var isActive = state.beadsState[i].lowers[logicalIdx];
 
             beadEl.dataset.active = isActive;
             if (isActive) activeVis.push(visualIdx);
@@ -876,6 +864,18 @@ function updateBeadPositions(animate) {
     }
 }
 
+// --- Drag state for realistic bead interaction ---
+var dragState = {
+    active: false,
+    rodIndex: -1,
+    beadType: null,    // 'upper' | 'lower'
+    beadLogical: -1,   // logical index for lower beads (0-3)
+    startY: 0,
+    beadStartTop: 0,
+    moved: false,
+    dragThreshold: 5   // px before counting as a drag
+};
+
 function renderAbacus() {
     DOM.frame.innerHTML = '';
     DOM.frame.setAttribute('data-rods', state.rodCount);
@@ -899,19 +899,22 @@ function renderAbacus() {
         const upperBead = document.createElement('div');
         upperBead.className = 'bead';
         upperBead.dataset.active = 'false';
-        upperBead.addEventListener('click', () => toggleUpperBead(i));
-        upperBead.addEventListener('touchend', (e) => { e.preventDefault(); toggleUpperBead(i); });
+        upperBead.dataset.rodIndex = i;
+        upperBead.dataset.beadType = 'upper';
+        setupBeadDrag(upperBead, i, 'upper', -1);
         upperGroup.appendChild(upperBead);
 
-        // Lower beads (top to bottom = bead index 3,2,1,0)
+        // Lower beads (top to bottom = visual 0,1,2,3 = logical 3,2,1,0)
         const lowerGroup = document.createElement('div');
         lowerGroup.className = 'bead-group lower-beads';
         for (let b = 3; b >= 0; b--) {
             const lowerBead = document.createElement('div');
             lowerBead.className = 'bead';
             lowerBead.dataset.active = 'false';
-            lowerBead.addEventListener('click', () => handleLowerBeadClick(i, b));
-            lowerBead.addEventListener('touchend', (e) => { e.preventDefault(); handleLowerBeadClick(i, b); });
+            lowerBead.dataset.rodIndex = i;
+            lowerBead.dataset.beadType = 'lower';
+            lowerBead.dataset.logicalIndex = b;
+            setupBeadDrag(lowerBead, i, 'lower', b);
             lowerGroup.appendChild(lowerBead);
         }
 
@@ -929,34 +932,120 @@ function renderAbacus() {
     updateBeadPositions(false);
 }
 
-function toggleUpperBead(rodIndex) {
-    state.beadsState[rodIndex].upper = !state.beadsState[rodIndex].upper;
+// --- Setup drag listeners on a single bead element ---
+function setupBeadDrag(beadEl, rodIndex, beadType, logicalIndex) {
+    function onPointerDown(e) {
+        e.preventDefault();
+        var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        dragState.active = true;
+        dragState.rodIndex = rodIndex;
+        dragState.beadType = beadType;
+        dragState.beadLogical = logicalIndex;
+        dragState.startY = clientY;
+        dragState.beadStartTop = parseInt(beadEl.style.top) || 0;
+        dragState.moved = false;
+        beadEl.classList.add('bead-dragging');
+    }
+
+    beadEl.addEventListener('mousedown', onPointerDown);
+    beadEl.addEventListener('touchstart', onPointerDown, { passive: false });
+}
+
+// --- Global pointer-move and pointer-up for drag ---
+function initGlobalDragListeners() {
+    function onPointerMove(e) {
+        if (!dragState.active) return;
+        var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        var deltaY = clientY - dragState.startY;
+        if (Math.abs(deltaY) > dragState.dragThreshold) {
+            dragState.moved = true;
+        }
+    }
+
+    function onPointerUp(e) {
+        if (!dragState.active) return;
+        var clientY;
+        if (e.changedTouches) {
+            clientY = e.changedTouches[0].clientY;
+        } else {
+            clientY = e.clientY;
+        }
+        var deltaY = clientY - dragState.startY;
+
+        // Remove dragging class from all beads
+        var allBeads = DOM.frame.querySelectorAll('.bead-dragging');
+        allBeads.forEach(function(b) { b.classList.remove('bead-dragging'); });
+
+        var ri = dragState.rodIndex;
+        var wasDrag = dragState.moved;
+
+        if (dragState.beadType === 'upper') {
+            handleUpperBeadGesture(ri, deltaY, wasDrag);
+        } else {
+            handleLowerBeadGesture(ri, dragState.beadLogical, deltaY, wasDrag);
+        }
+
+        dragState.active = false;
+        dragState.rodIndex = -1;
+    }
+
+    document.addEventListener('mousemove', onPointerMove);
+    document.addEventListener('touchmove', onPointerMove, { passive: false });
+    document.addEventListener('mouseup', onPointerUp);
+    document.addEventListener('touchend', onPointerUp);
+}
+
+// --- Upper bead gesture: drag down = activate (toward bar), drag up = deactivate ---
+function handleUpperBeadGesture(rodIndex, deltaY, wasDrag) {
+    var isActive = state.beadsState[rodIndex].upper;
+    if (wasDrag) {
+        // Drag down → activate (push toward crossbar)
+        // Drag up → deactivate (pull away from crossbar)
+        if (deltaY > 0 && !isActive) {
+            state.beadsState[rodIndex].upper = true;
+        } else if (deltaY < 0 && isActive) {
+            state.beadsState[rodIndex].upper = false;
+        }
+    } else {
+        // Tap/click → toggle
+        state.beadsState[rodIndex].upper = !isActive;
+    }
     updateBeadPositions();
     updateAbacusValue();
     emitBeadUpdate();
 }
 
-function handleLowerBeadClick(rodIndex, beadIndex) {
-    const mode = state.beadMode || 'individual';
+// --- Lower bead gesture: real soroban behavior ---
+// Drag up on an inactive bead → activate it AND all beads below it up to the bar
+// Drag down on an active bead → deactivate it AND all beads above it away from the bar
+// This lets you push 1, 2, 3, or 4 beads at once, just like a real abacus
+function handleLowerBeadGesture(rodIndex, logicalIndex, deltaY, wasDrag) {
+    var isActive = state.beadsState[rodIndex].lowers[logicalIndex];
 
-    if (mode === 'individual') {
-        // Toggle only this specific bead
-        state.beadsState[rodIndex].lowers[beadIndex] = !state.beadsState[rodIndex].lowers[beadIndex];
-    } else if (mode === 'together') {
-        // Toggle all 4 beads at once
-        const anyActive = state.beadsState[rodIndex].lowers.some(b => b);
-        for (let i = 0; i < 4; i++) {
-            state.beadsState[rodIndex].lowers[i] = !anyActive;
+    if (wasDrag) {
+        if (deltaY < 0) {
+            // Drag UP → push beads toward crossbar (activate)
+            // Activate this bead and all below it (logical index 0..logicalIndex)
+            for (var i = 0; i <= logicalIndex; i++) {
+                state.beadsState[rodIndex].lowers[i] = true;
+            }
+        } else if (deltaY > 0) {
+            // Drag DOWN → pull beads away from crossbar (deactivate)
+            // Deactivate this bead and all above it (logical index logicalIndex..3)
+            for (var i = logicalIndex; i < 4; i++) {
+                state.beadsState[rodIndex].lowers[i] = false;
+            }
         }
     } else {
-        // Standard soroban: activate from bottom up, deactivate from top down
-        const currentState = state.beadsState[rodIndex].lowers[beadIndex];
-        if (!currentState) {
-            for (let i = 0; i <= beadIndex; i++) {
+        // Tap/click → soroban standard behavior
+        if (!isActive) {
+            // Activate this bead and all below it
+            for (var i = 0; i <= logicalIndex; i++) {
                 state.beadsState[rodIndex].lowers[i] = true;
             }
         } else {
-            for (let i = beadIndex; i < 4; i++) {
+            // Deactivate this bead and all above it
+            for (var i = logicalIndex; i < 4; i++) {
                 state.beadsState[rodIndex].lowers[i] = false;
             }
         }
@@ -996,13 +1085,6 @@ function setupEventListeners() {
     });
 
     DOM.resetBtn.addEventListener('click', () => {
-        resetAbacusState(state.rodCount);
-        renderAbacus();
-    });
-
-    DOM.beadMode.addEventListener('change', (e) => {
-        state.beadMode = e.target.value;
-        // Reset beads when switching mode to avoid confusing states
         resetAbacusState(state.rodCount);
         renderAbacus();
     });
@@ -1781,13 +1863,23 @@ function setupCollaboration() {
     // ---- Share Direct Link (teacher only) ----
     DOM.shareLinkBtn.addEventListener('click', () => {
         if (!state.roomCode) return;
-        const baseUrl = window.location.origin + window.location.pathname;
-        const directLink = `${baseUrl}?room=${state.roomCode}`;
+        // Build a proper full URL that always works
+        var baseUrl;
+        if (window.location.protocol === 'file:' || window.location.origin === 'null') {
+            // Running locally via file:// — use the backend server URL
+            baseUrl = 'http://localhost:3001';
+        } else if (window.location.hostname.includes('github.io')) {
+            // GitHub Pages — use the Render backend URL
+            baseUrl = RENDER_BACKEND_URL;
+        } else {
+            baseUrl = window.location.origin;
+        }
+        var directLink = baseUrl + '?room=' + state.roomCode;
         navigator.clipboard.writeText(directLink).then(() => {
-            showToast('\ud83d\udd17 Direct student link copied! Send it to your student — no passcode needed.', 'success');
+            showToast('\ud83d\udd17 Link copied: <strong>' + directLink + '</strong>', 'success');
         }).catch(() => {
-            // Fallback: show link in toast
-            showToast(`\ud83d\udd17 Share this link: <strong>${directLink}</strong>`, 'info');
+            // Fallback: show link in toast so teacher can copy manually
+            showToast('\ud83d\udd17 Share this link: <strong>' + directLink + '</strong>', 'info');
         });
     });
 
@@ -1801,13 +1893,22 @@ function setupCollaboration() {
         DOM.joinRoomInput.value = DOM.joinRoomInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     });
 
-    // Copy room code
+    // Copy room code — also include the full link
     DOM.roomCodeDisplay.addEventListener('click', () => {
         if (state.roomCode) {
-            navigator.clipboard.writeText(state.roomCode).then(() => {
-                showToast('\ud83d\udccb Room code copied!', 'success');
+            var baseUrl;
+            if (window.location.protocol === 'file:' || window.location.origin === 'null') {
+                baseUrl = 'http://localhost:3001';
+            } else if (window.location.hostname.includes('github.io')) {
+                baseUrl = RENDER_BACKEND_URL;
+            } else {
+                baseUrl = window.location.origin;
+            }
+            var fullLink = baseUrl + '?room=' + state.roomCode;
+            navigator.clipboard.writeText(fullLink).then(() => {
+                showToast('\ud83d\udccb Link copied: <strong>' + fullLink + '</strong>', 'success');
             }).catch(() => {
-                showToast(`Room code: ${state.roomCode}`, 'info');
+                showToast('Link: <strong>' + fullLink + '</strong>', 'info');
             });
         }
     });
